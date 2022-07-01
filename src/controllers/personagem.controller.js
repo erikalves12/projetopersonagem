@@ -1,36 +1,76 @@
 const personagemService = require('../service/personagem.service');
 
-const findAllPersonagensController = (req, res) => {
-  const personagens = personagemService.findAllPersonagensService();
+const mongoose = require('mongoose');
+
+const findAllPersonagensController = async (req, res) => {
+  const personagens = await personagemService.findAllPersonagensService();
+  if (personagens.length == 0) {
+    return res
+      .status(401)
+      .send({ message: 'Não existem personagens cadastrados!' });
+  }
   res.send(personagens);
 };
 
-const findByIdPersonagemController = (req, res) => {
-  const parametroId = Number(req.params.id);
-  const imagemEscolhida =
-    personagemService.findByIdPersonagemService(parametroId);
-  res.send(imagemEscolhida);
+const findByIdPersonagemController = async (req, res) => {
+  const parametroId = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(parametroId)) {
+    return res.status(400).send({ message: 'Id inexistente!' });
+  }
+  const personagemEscolhido = await personagemService.findByIdPersonagemService(
+    parametroId,
+  );
+  res.send(personagemEscolhido);
 };
 
-const createPersonagemController = (req, res) => {
+const createPersonagemController = async (req, res) => {
   const personagem = req.body;
-  const newPersonagem = personagemService.createPersonagemService(personagem);
-  res.send(newPersonagem);
+
+  if (
+    !personagem ||
+    !personagem.NomeDoFilme ||
+    !personagem.personagem ||
+    !personagem.tarefa ||
+    !personagem.tempo
+  ) {
+    return res.status(400).send({ message: 'Campo incompleto' });
+  }
+
+  const newPersonagem = await personagemService.createPersonagemService(
+    personagem,
+  );
+  res.status(201).send(newPersonagem);
 };
 
-const updatePersonagemController = (req, res) => {
-  const paramsId = Number(req.params.id);
+const updatePersonagemController = async (req, res) => {
+  const paramsId = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(paramsId)) {
+    return res.status(400).send({ message: 'Id inexistente!' });
+  }
   const personagemEdit = req.body;
-  const updatePersonagem = personagemService.updatePersonagemService(
+  if (
+    !personagemEdit ||
+    !personagemEdit.NomeDoFilme ||
+    !personagemEdit.personagem ||
+    !personagemEdit.tarefa ||
+    !personagemEdit.tempo
+  ) {
+    return res.status(400).send({ message: 'Campo incompleto' });
+  }
+  const updatePersonagem = await personagemService.updatePersonagemService(
     paramsId,
     personagemEdit,
   );
   res.send(updatePersonagem);
 };
 
-const deletePersonagemController = (req, res) => {
-  const paramsId = Number(req.params.id);
-  personagemService.deletePersonagemService(paramsId);
+const deletePersonagemController = async (req, res) => {
+  const paramsId = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(paramsId)) {
+    return res.status(400).send({ message: 'Id inexistente!' });
+  }
+  await personagemService.deletePersonagemService(paramsId);
   res.send({ message: 'Personagem deletado com suceso!!!' });
 };
 

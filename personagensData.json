@@ -1,0 +1,21 @@
+[
+  {
+    "NomeDoFilme": "Os Vingadores",
+    "personagem": "Homem de ferro",
+    "tarefa": "Salvar a Humanidade",
+    "tempo": "3:00hs"
+  },
+  {
+    "NomeDoFilme": "Os Vingadores",
+    "personagem": "Capitão America",
+    "tarefa": "Resgatar a Viúva Negra",
+    "tempo": "6:00hs"
+  },
+
+  {
+    "NomeDoFilme": "Os Vingadores",
+    "personagem": "Hulk",
+    "tarefa": "Unir-se ao Thor",
+    "tempo": "12:00hs"
+  }
+]
